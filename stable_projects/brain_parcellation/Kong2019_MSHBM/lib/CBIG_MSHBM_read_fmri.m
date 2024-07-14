@@ -39,8 +39,8 @@ if (~isempty(strfind(fmri_name, '.mat')))
     fmri = [];
 elseif (isempty(strfind(fmri_name, '.dtseries.nii')))
     % if input file is NIFTI file
-    fmri = MRIread(fmri_name);
-    vol = single(fmri.vol);
+    fmri = load_nii(fmri_name);
+    vol = single(fmri.img);
     vol_size = size(vol);
     vol = reshape(vol, prod(vol_size(1:3)), prod(vol_size)/prod(vol_size(1:3)));
     fmri.vol = [];

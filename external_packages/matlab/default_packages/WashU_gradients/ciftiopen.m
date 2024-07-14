@@ -22,8 +22,8 @@ if (nargin < 3)
 end
 
 % Use Matlab 'tempname' to return a temporary file name and location appropriate for this system
-tmpfile = tempname;
-
+tmpfile = fullfile('/mica/mica1/03_projects/yigu/indiv_parc/test2', tempname);
+disp(tmpfile);
 tstart=tic;
 
 % Do conversion and loading
@@ -35,4 +35,4 @@ if (verbose)
 end
 
 % Clean-up
-delete([tmpfile '.gii'],[tmpfile '.gii.data']);
+%delete([tmpfile '.gii'],[tmpfile '.gii.data']);

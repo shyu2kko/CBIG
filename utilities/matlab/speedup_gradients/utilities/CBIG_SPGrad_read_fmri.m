@@ -22,10 +22,10 @@ function [fmri, vol, vol_size] = CBIG_SPGrad_read_fmri(fmri_name)
 %       The size of fmri.vol (NIFTI) or fmri.dtseries (CIFTI).
 % Written by Ru(by) Kong and CBIG under MIT license: https://github.com/ThomasYeoLab/CBIG/blob/master/LICENSE.md
 
-if (isempty(strfind(fmri_name, '.dtseries.nii')))
+if ((strfind(fmri_name, '.dtseries.nii')))
     % if input file is NIFTI file
-    fmri = MRIread(fmri_name);
-    vol = fmri.vol;
+    fmri = load_nii(fmri_name);
+    vol = fmri.img;
     vol_size = size(vol);
     if(length(vol_size) == 3)
         vol = reshape(vol, prod(vol_size(1:3)), 1);
@@ -34,11 +34,17 @@ if (isempty(strfind(fmri_name, '.dtseries.nii')))
         vol = reshape(vol, prod(vol_size(1:3)), vol_size(4));
     end
     fmri.vol = [];
-else
+elseif (strfind(fmri_name, ".dscalar.nii.gz"))
     % if input file is CIFTI file
     fmri = ft_read_cifti(fmri_name);
     vol = fmri.dtseries;
     vol = vol(fmri.brainstructure==1|fmri.brainstructure==2, :);
     vol_size = size(vol);
     fmri.dtseries = [];
+elseif (strfind(fmri_name, ".shape.gii"))
+    % here I only need vol as an array
+    fmri = gifti(fmri_name);
+    vol = transpose(fmri.cdata);
+    vol_size = size(vol);
+    fmri.cdata = [];
 end

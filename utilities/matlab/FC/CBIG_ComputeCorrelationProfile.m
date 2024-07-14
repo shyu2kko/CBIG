@@ -213,8 +213,12 @@ for i = 1:length(varargin1)
             rh_seed_series = rh_seed_series(outliers==1, :);
         end
         s_series = [lh_seed_series rh_seed_series];
-    else
+    elseif(strfind(input, '.dscalar.nii'))
         seed_ind = find(input_series.brainstructure==1 | input_series.brainstructure==2);
+        seed_ind = seed_ind(s_mesh.dlabel~=0);
+        s_series = lh_seed_series(:, seed_ind);
+    elseif(strfind(input, '.shape.gii'))
+        seed_ind = find(s_mesh.brainstructure==1 | s_mesh.brainstructure==2);
         seed_ind = seed_ind(s_mesh.dlabel~=0);
         s_series = lh_seed_series(:, seed_ind);
     end
@@ -413,10 +417,10 @@ function [fmri, vol, vol_size] = read_fmri(fmri_name)
 %     - vol_size:
 %       The size of fmri.vol (NIFTI) or fmri.dtseries (CIFTI).
 
-if (isempty(strfind(fmri_name, '.dtseries.nii')))
+if (strfind(fmri_name, '.dtseries.nii'))
     % if input file is NIFTI file
-    fmri = MRIread(fmri_name);
-    vol = fmri.vol;
+    fmri = load_nii(fmri_name);
+    vol = fmri.img;
     vol_size = size(vol);
     if(length(vol_size) < 4)
         vol = reshape(vol, prod(vol_size(1:length(vol_size)-1)), vol_size(length(vol_size)));
@@ -424,13 +428,19 @@ if (isempty(strfind(fmri_name, '.dtseries.nii')))
         vol = reshape(vol, prod(vol_size(1:3)), vol_size(4));
     end
     fmri.vol = [];
-else
+elseif (strfind(fmri_name, '.dscalar.nii'))
     % if input file is CIFTI file
     fmri = ft_read_cifti(fmri_name);
     vol = fmri.dtseries;
     vol = vol(fmri.brainstructure==1|fmri.brainstructure==2, :);
     vol_size = size(vol);
     fmri.dtseries = [];
+elseif (strfind(fmri_name, '.shape.gii'))
+    % if input file is GIFTI file
+    fmri = gifti(fmri_name);
+    vol = fmri.cdata;
+    vol = transpose(vol);
+    vol_size = size(vol);
 end
 
 

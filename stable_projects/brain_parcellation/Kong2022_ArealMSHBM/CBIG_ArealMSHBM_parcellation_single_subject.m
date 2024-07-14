@@ -269,7 +269,7 @@ if strcmp(model, 'cMSHBM') || strcmp(model, 'gMSHBM')
         mkdir(fullfile(project_dir, 'priors',model, beta_folder));
     end
     if ~exist(fullfile(project_dir, 'priors',model, beta_folder ,'Params_Final.mat'), 'file')
-        system(['ln -s ' group_prior ' ' fullfile(project_dir, 'priors',model, beta_folder, 'Params_Final.mat')]);
+        system(char(['ln -s ' group_prior ' ' fullfile(project_dir, 'priors',model, beta_folder, 'Params_Final.mat')]));
     else
         disp('group_prior already exists!');
     end
@@ -278,7 +278,7 @@ elseif strcmp(model, 'dMSHBM')
         mkdir(fullfile(project_dir, 'priors',model));
     end
     if ~exist(fullfile(project_dir, 'priors',model ,'Params_Final.mat'), 'file')
-        system(['ln -s ' group_prior ' ' fullfile(project_dir, 'priors',model, 'Params_Final.mat')]);
+        system(char(['ln -s ' group_prior ' ' fullfile(project_dir, 'priors',model, 'Params_Final.mat')]));
     else
         disp('group_prior already exists!');
     end
